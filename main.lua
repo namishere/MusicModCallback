@@ -1,5 +1,22 @@
 if not REPENTANCE then return end
 
+-- TODO:
+--[[
+	Update functions to leverage new API capabilities:
+		Room:IsMirrorWorld()
+		Room:HasCurseMist()
+		Level:IsAscent()
+	Mirror transition fade speed
+	Jingles should use SFX:
+		Treasure Room jingle
+		Secret Room discover
+		Strange Door jingle
+	Shadow mom chase doesn't play jingle, only starts chase music when leaving room
+	Dark home is overriden by normal home theme
+		Home theme restarts every room
+]]--
+
+
 Isaac.ConsoleOutput("Loading MusicAPI...\n")
 
 local enums = require("scripts.musicapi.enums")
@@ -16,6 +33,8 @@ MusicAPI.PreGameStart()
 Isaac.ConsoleOutput("MusicAPI loaded successfully.\n")
 
 local mod = RegisterMod("MusicAPI Debug Info", 1)
+
+MusicAPI.ShowDebugInfo = true
 
 mod:AddCallback(ModCallbacks.MC_POST_RENDER, function()
 	if MusicAPI.ShowDebugInfo then
