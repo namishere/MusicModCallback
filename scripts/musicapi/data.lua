@@ -66,7 +66,7 @@ floors[LevelStage.STAGE7] = {
 
 floors[LevelStage.STAGE8] = {
 	[StageType.STAGETYPE_ORIGINAL] = "STAGE_HOME",
-	[StageType.STAGETYPE_WOTL] = "STAGE_DARK_HOME",
+	[StageType.STAGETYPE_WOTL] = "STAGE_HOME",
 }
 
 local floors_dim1 = {}

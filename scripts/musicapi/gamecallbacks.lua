@@ -367,6 +367,14 @@ mod:AddCallback(ModCallbacks.MC_POST_NPC_DEATH, function(self, ent) -- Hush thin
 	end
 end, EntityType.ENTITY_ISAAC)
 
+mod:AddCallback(ModCallbacks.MC_NPC_UPDATE, function(self, ent) -- Hush thinks
+	if ent.I1 == 1 and ent.I2 == 0 then
+		ent.I2 = 1 -- Nami: hackkkkk
+		MusicAPI.PlayTrack("INTRO_MOTHERS_SHADOW")
+		MusicAPI.QueueTrack("STATE_MINESHAFT_ESCAPE")
+	end
+end, EntityType.ENTITY_MOTHERS_SHADOW)
+
 mod:AddCallback(ModCallbacks.MC_POST_ENTITY_REMOVE, function(self, ent) -- Angel thinks
 	if ent.Variant == 9 then
 		if MusicAPI.State and MusicAPI.State.Type == "AngelBoss" and MusicAPI.State.Phase == 1 then

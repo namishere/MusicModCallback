@@ -12,6 +12,7 @@ if not REPENTANCE then return end
 		Secret Room discover
 		Strange Door jingle
 	Shadow mom chase doesn't play jingle, only starts chase music when leaving room
+		Fixed, but would like a NO_INTERRUPT tag
 	Dark home is overriden by normal home theme
 		Home theme restarts every room
 ]]--

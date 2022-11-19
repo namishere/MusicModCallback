@@ -1132,6 +1132,11 @@ function MusicAPI.UseQueue()
 				else
 					MusicAPI.Crossfade(id, fade_speed)
 				end
+				if cache.Stage == LevelStage.STAGE8 and cache.StageType == StageType.STAGETYPE_WOTL and Game():GetRoom():IsClear() then
+					if not MusicAPI.Manager:IsLayerEnabled() then
+						MusicAPI.Manager:EnableLayer()
+					end
+				end
 			end
 		end
 	else
@@ -1155,7 +1160,7 @@ Calls the SFXManager's play for this music id.
 ]]
 function MusicAPI.PlaySound(track, sound_id, fade_speed)
 	MusicAPI.SoundManager:Play(sound_id, Options.SoundVolume)
-	if track.FadeLength > 0 then
+	if track.FadeLength and track.FadeLength > 0 then
 		MusicAPI.Manager:VolumeSlide(.25, fade_speed)
 		mod.scheduleForUpdate(function()
 			print("hi")
@@ -1172,6 +1177,7 @@ MusicAPI.Play(Music music_id)
 Calls the MusicManager's play for this music id.
 ]]
 function MusicAPI.Play(music_id)
+	print("playing "..music_id)
 	MusicAPI.Manager:Play(music_id, 0)
 	MusicAPI.Manager:UpdateVolume()
 	MusicAPI.Manager:Queue(Music.MUSIC_MUSICAPI_QUEUE_POP)
@@ -1237,7 +1243,6 @@ function MusicAPI.GetTrackMusic(track_name)
 	if track then
 		if track.Tags.SFX then
 			print("caught sfx in GetTrackMusic")
-			print(dump(track))
 			local track_sound_type = type(track.Sound)
 			if track_sound_type == "number" then
 				return track.Sound

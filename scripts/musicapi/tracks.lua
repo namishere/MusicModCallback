@@ -191,12 +191,14 @@ local track_table = {
 		Music = Music.MUSIC_ISAACS_HOUSE,
 		Tags = {"STAGE", "REPENTANCE"}
 	},
+	--[[
 	["STAGE_DARK_HOME"] = {
 		Music = Music.MUSIC_ISAACS_HOUSE,
 		Tags = {"STAGE", "REPENTANCE"},
 		FadeSpeed = 1,
+		Persistence = 1
 	},
-	
+	]]
 	["BOSS_REBIRTH"] = {
 		Music = Music.MUSIC_BOSS,
 		Tags = {"BOSS", "BOSS_GENERIC"}
@@ -461,18 +463,24 @@ local track_table = {
 	},
 	["JINGLE_SECRET_ROOM"] = {
 		Music = Music.MUSIC_JINGLE_SECRETROOM_FIND,
-		Tags = {"JINGLE", "JINGLE_SECRET"},
-		Persistence = 1
+		Sound = Sound.SOUND_SECRETROOM_FIND,
+		Tags = {"JINGLE", "JINGLE_SECRET", "SFX"},
+		Persistence = 1,
+		FadeLength = 135
 	},
 	["JINGLE_SUPER_SECRET_ROOM"] = {
 		Music = Music.MUSIC_JINGLE_SECRETROOM_FIND,
-		Tags = {"JINGLE", "JINGLE_SECRET"},
-		Persistence = 1
+		Sound = Sound.SOUND_SECRETROOM_FIND,
+		Tags = {"JINGLE", "JINGLE_SECRET", "SFX"},
+		Persistence = 1,
+		FadeLength = 135
 	},
 	["JINGLE_ULTRA_SECRET_ROOM"] = {
 		Music = Music.MUSIC_JINGLE_SECRETROOM_FIND,
-		Tags = {"JINGLE", "JINGLE_SECRET"},
-		Persistence = 1
+		Sound = Sound.SOUND_SECRETROOM_FIND,
+		Tags = {"JINGLE", "JINGLE_SECRET", "SFX"},
+		Persistence = 1,
+		FadeLength = 135
 	},
 	["JINGLE_TREASURE_ROOM"] = {
 		Music = {
