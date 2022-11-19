@@ -1,5 +1,6 @@
-local enums = require "scripts.musicapi.enums"
+local enums = include "scripts.musicapi.enums"
 local Music = enums.Music
+local Sound = enums.Sound
 
 --[[
 Music tracks will replace (or supplement) normal Music ids.
@@ -480,9 +481,15 @@ local track_table = {
 			Music.MUSIC_JINGLE_TREASUREROOM_ENTRY_2,
 			Music.MUSIC_JINGLE_TREASUREROOM_ENTRY_3
 		},
-		Tags = {"JINGLE"},
+		Sound = {
+			Sound.SOUND_TREASUREROOM_ENTRY_0,
+			Sound.SOUND_TREASUREROOM_ENTRY_1,
+			Sound.SOUND_TREASUREROOM_ENTRY_2,
+			Sound.SOUND_TREASUREROOM_ENTRY_3
+		},
+		Tags = {"JINGLE", "SFX"},
 		Persistence = 1,
-		FadeSpeed = 1,
+		FadeLength = 135
 	},
 	["JINGLE_GAME_OVER"] = {
 		Music = Music.MUSIC_JINGLE_GAME_OVER,

@@ -78,6 +78,18 @@ function util.shallowCopy(t)
 	return new
 end
 
+---- scheduling functions utils
+function util.runUpdates(tab) --This is from Fiend Folio
+    for i = #tab, 1, -1 do
+        local f = tab[i]
+        f.Delay = f.Delay - 1
+        if f.Delay <= 0 then
+            f.Func()
+            table.remove(tab, i)
+        end
+    end
+end
+
 --TEST (COMMENT OUT ON RELEASE)
 local myFuncAssert1 = util.assertTypeFn({"Vector", "number"}, 1)
 local myFuncAssert2 = util.assertTypeFn({"string", "number"}, 1)

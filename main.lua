@@ -16,6 +16,7 @@ if not REPENTANCE then return end
 		Home theme restarts every room
 ]]--
 
+include("scripts.dump")
 
 Isaac.ConsoleOutput("Loading MusicAPI...\n")
 

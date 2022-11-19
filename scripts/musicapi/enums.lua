@@ -110,6 +110,13 @@ local NewMusic = {
 	MUSIC_REVERSE_GENESIS = Isaac.GetMusicIdByName("Genesis (reversed)"),
 }
 
+local Sound = {
+	SOUND_TREASUREROOM_ENTRY_0 = Isaac.GetSoundIdByName("Treasure Room Entry 0"),
+	SOUND_TREASUREROOM_ENTRY_1 = Isaac.GetSoundIdByName("Treasure Room Entry 1"),
+	SOUND_TREASUREROOM_ENTRY_2 = Isaac.GetSoundIdByName("Treasure Room Entry 2"),
+	SOUND_TREASUREROOM_ENTRY_3 = Isaac.GetSoundIdByName("Treasure Room Entry 3"),
+}
+
 for _,n in pairs(NewMusic) do
 	if not NewMusic.NUM_MUSIC or n > NewMusic.NUM_MUSIC then
 		NewMusic.NUM_MUSIC = n
@@ -117,4 +124,4 @@ for _,n in pairs(NewMusic) do
 end
 NewMusic.NUM_MUSIC = NewMusic.NUM_MUSIC + 1
 
-return {Music = NewMusic, MusicOld = Music}
+return {Music = NewMusic, MusicOld = Music, Sound = Sound}

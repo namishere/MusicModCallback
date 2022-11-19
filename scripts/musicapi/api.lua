@@ -2,11 +2,11 @@ assert(_VERSION == "Lua 5.3", "The game is no longer using Lua 5.3! Alert the mo
 
 local MusicAPI = {}
 
-local util = require "scripts.musicapi.util"
-local enums = require "scripts.musicapi.enums"
-local cache = require "scripts.musicapi.cache"
-local data = require "scripts.musicapi.data"
-local tracks = require "scripts.musicapi.tracks"
+local util = include("scripts.musicapi.util")
+local enums = include("scripts.musicapi.enums")
+local cache = include("scripts.musicapi.cache")
+local data = include("scripts.musicapi.data")
+local tracks = include("scripts.musicapi.tracks")
 
 MusicAPI.APIVersion = {3, 0}
 
@@ -24,6 +24,8 @@ MusicAPI.TrackCallbacks = {}
 MusicAPI.Manager = MusicManager()
 MusicAPI.Queue = {}
 
+MusicAPI.SoundManager = SFXManager()
+
 MusicAPI.Callbacks = {
 	OnPlay = {},
 	OnTrack = {},
@@ -31,6 +33,21 @@ MusicAPI.Callbacks = {
 
 MusicAPI.ModMusic = RegisterMod("MusicAPI Music", 1)
 local mod = MusicAPI.ModMusic
+
+--here because we need a mod reference
+local delayedFuncs = {}
+function mod.scheduleForUpdate(foo, delay, callback)
+    callback = callback or ModCallbacks.MC_POST_UPDATE
+
+    if not delayedFuncs[callback] then
+        delayedFuncs[callback] = {}
+        mod:AddCallback(callback, function()
+            util.runUpdates(delayedFuncs[callback])
+        end)
+    end
+
+    table.insert(delayedFuncs[callback], { Func = foo, Delay = delay })
+end
 
 local MusicTranslatedIDs = {}
 MusicAPI.MusicTranslatedIDs = MusicTranslatedIDs
@@ -67,11 +84,18 @@ function MusicAPI.AddTrack(name, tbl)
 	if tbl then
 		track.Default = {
 			Music = tbl.Music,
+			Sound = tbl.Sound or nil,
 			Persistence = tbl.Persistence,
 			FadeSpeed = tbl.FadeSpeed,
+			FadeLength = tbl.FadeLength or nil
 		}
 		
 		track.Music = util.shallowCopy(track.Default.Music)
+		if track.Default.Sound ~= nil then
+			print("shallow copy sound")
+			track.Sound = util.shallowCopy(track.Default.Sound)
+			track.FadeLength = track.Default.FadeLength
+		end
 		track.Persistence = tbl.Persistence
 		track.FadeSpeed = tbl.FadeSpeed
 		
@@ -497,6 +521,9 @@ do
 			if jump_table_func then
 				local a, b, c, d, e, f = jump_table_func()
 				if MusicAPI.IsTrackPlayable(a) then
+					if a == "JINGLE_TREASURE_ROOM" then
+						print("caught treasure in GetRoomEntryTrack")
+					end
 					return a, b, c, d, e, f
 				end
 			end
@@ -865,11 +892,15 @@ end
 MusicAPI.PlayJingle(string track_name)
 
 Inserts a jingle before the current queue.
-]]
+
+??? There's two functions with the same name ???
+
 function MusicAPI.PlayJingle(track_name)
+	print(tostring(track_name))
 	table.insert(MusicAPI.Queue, 1, track_name)
 	MusicAPI.UseQueue()
 end
+]]
 
 --[[
 MusicAPI.PlayTrack(string track_name, ...)
@@ -1090,11 +1121,17 @@ function MusicAPI.UseQueue()
 		local id = MusicAPI.GetTrackMusic(queue_1)
 		id = MusicAPI.RunOnMusicCallbacks(queue_1, id)
 		if id then
+			print(dump(MusicAPI.Tracks[queue_1]))
 			local fade_speed = MusicAPI.Tracks[queue_1].FadeSpeed or 0.08
-			if fade_speed >= 1 then
-				MusicAPI.Play(id)
+			if MusicAPI.Tracks[queue_1].Tags.SFX then
+				print("track "..queue_1.." is a sound!")
+				MusicAPI.PlaySound(MusicAPI.Tracks[queue_1], id, fade_speed)
 			else
-				MusicAPI.Crossfade(id, fade_speed)
+				if fade_speed >= 1 then
+					MusicAPI.Play(id)
+				else
+					MusicAPI.Crossfade(id, fade_speed)
+				end
 			end
 		end
 	else
@@ -1109,6 +1146,24 @@ function MusicAPI.UseQueue()
 			end
 		end
 	end
+end
+
+--[[
+MusicAPI.PlaySound(Music music_id)
+
+Calls the SFXManager's play for this music id.
+]]
+function MusicAPI.PlaySound(track, sound_id, fade_speed)
+	MusicAPI.SoundManager:Play(sound_id, Options.SoundVolume)
+	if track.FadeLength > 0 then
+		MusicAPI.Manager:VolumeSlide(.25, fade_speed)
+		mod.scheduleForUpdate(function()
+			print("hi")
+			MusicAPI.Manager:VolumeSlide(1, fade_speed)
+		end, track.FadeLength, ModCallbacks.MC_POST_RENDER)
+	end
+	MusicAPI.Manager:Queue(Music.MUSIC_MUSICAPI_QUEUE_POP)
+	MusicAPI.RunOnPlayCallbacks()
 end
 
 --[[
@@ -1174,15 +1229,28 @@ MusicAPI.GetTrackMusic(string track_name)
 Gets a music id from the given track name.
 Only one can be returned, so if multiple music IDs are stored, a
 random one is returned.
+
+Will return a sound id if track contains the entry Sound.
 ]]
 function MusicAPI.GetTrackMusic(track_name)
 	local track = MusicAPI.Tracks[track_name]
 	if track then
-		local track_music_type = type(track.Music)
-		if track_music_type == "number" then
-			return track.Music
-		elseif track_music_type == "table" then
-			return track.Music[math.random(#track.Music)]
+		if track.Tags.SFX then
+			print("caught sfx in GetTrackMusic")
+			print(dump(track))
+			local track_sound_type = type(track.Sound)
+			if track_sound_type == "number" then
+				return track.Sound
+			elseif track_sound_type == "table" then
+				return track.Sound[math.random(#track.Sound)]
+			end
+		else
+			local track_music_type = type(track.Music)
+			if track_music_type == "number" then
+				return track.Music
+			elseif track_music_type == "table" then
+				return track.Music[math.random(#track.Music)]
+			end
 		end
 	end
 end
@@ -1317,6 +1385,9 @@ function MusicAPI.RunOnTrackCallbacksOnList(track_names, list_is_queue)
 					if type(b) == "table" then
 						addAll(b)
 					else
+						if b == "JINGLE_TREASURE_ROOM" then
+							print("caught treasure in RunOnTrackCallbacksOnList")
+						end
 						newer_track_names[#newer_track_names + 1] = b
 					end
 				end
@@ -1430,7 +1501,7 @@ MusicAPI.Save = {Game = {}}
 MusicAPI.SaveData()
 ]]
 function MusicAPI.SaveData()
-	local json = require "json"
+	local json = include "json"
 	local d = {
 		Mod = {
 			Version = 3,
@@ -1447,7 +1518,7 @@ end
 MusicAPI.LoadData()
 ]]
 function MusicAPI.LoadData()
-	local json = require "json"
+	local json = include "json"
 	MusicAPI.Save = {}
 	
 	local s, err = pcall(function()

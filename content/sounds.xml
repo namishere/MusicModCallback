@@ -1,0 +1,20 @@
+<sounds root="sfx/">
+	<sound name="Treasure Room Entry 0">
+		<sample weight="1" path="treasure_jingle_1.wav" />
+	</sound>
+	<sound name="Treasure Room Entry 1">
+		<sample weight="1" path="treasure_jingle_2.wav" />
+	</sound>
+	<sound name="Treasure Room Entry 2">
+		<sample weight="1" path="treasure_jingle_3.wav" />
+	</sound>
+	<sound name="Treasure Room Entry 3">
+		<sample weight="1" path="treasure_jingle_4.wav" />
+	</sound>
+	<sound name="Secret Room Jingle">
+		<sample weight="1" path="secret_room_jingle.wav" />
+	</sound>
+	<sound name="Strange Door Jingle">
+		<sample weight="1" path="strange_door_jingle.wav" />
+	</sound>
+</sounds>
