@@ -2,11 +2,11 @@ assert(_VERSION == "Lua 5.3", "The game is no longer using Lua 5.3! Alert the mo
 
 local MusicAPI = {}
 
-local util = include("scripts.musicapi.util")
-local enums = include("scripts.musicapi.enums")
-local cache = include("scripts.musicapi.cache")
-local data = include("scripts.musicapi.data")
-local tracks = include("scripts.musicapi.tracks")
+local util = require "scripts.musicapi.util"
+local enums = require "scripts.musicapi.enums"
+local cache = require "scripts.musicapi.cache"
+local data = require "scripts.musicapi.data"
+local tracks = require "scripts.musicapi.tracks"
 
 MusicAPI.APIVersion = {3, 0}
 
@@ -1506,7 +1506,7 @@ MusicAPI.Save = {Game = {}}
 MusicAPI.SaveData()
 ]]
 function MusicAPI.SaveData()
-	local json = include "json"
+	local json = require "json"
 	local d = {
 		Mod = {
 			Version = 3,
@@ -1523,7 +1523,7 @@ end
 MusicAPI.LoadData()
 ]]
 function MusicAPI.LoadData()
-	local json = include "json"
+	local json = require "json"
 	MusicAPI.Save = {}
 	
 	local s, err = pcall(function()

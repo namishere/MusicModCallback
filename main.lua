@@ -6,15 +6,17 @@ if not REPENTANCE then return end
 		Room:IsMirrorWorld()
 		Room:HasCurseMist()
 		Level:IsAscent()
+			Frankly might not really need to
 	Mirror transition fade speed
 	Jingles should use SFX:
 		Treasure Room jingle
 		Secret Room discover
 		Strange Door jingle
+			Done
 	Shadow mom chase doesn't play jingle, only starts chase music when leaving room
 		Fixed, but would like a NO_INTERRUPT tag
 	Dark home is overriden by normal home theme
-		Home theme restarts every room
+		Fixed
 ]]--
 
 include("scripts.dump")
