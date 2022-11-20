@@ -67,20 +67,20 @@ local track_table = {
 	},
 	["STAGE_DOWNPOUR"] = {
 		Music = Music.MUSIC_DOWNPOUR,
-		Tags = {"STAGE", "REPENTANCE", "MIRROR_TRANSITION"}
+		Tags = {"STAGE", "REPENTANCE"}
 	},
 	["STAGE_DROSS"] = {
 		Music = Music.MUSIC_DROSS,
-		Tags = {"STAGE", "REPENTANCE", "MIRROR_TRANSITION"}
+		Tags = {"STAGE", "REPENTANCE"}
 	},
 	["STAGE_MIRROR_DOWNPOUR"] = {
 		Music = Music.MUSIC_DOWNPOUR_REVERSE,
-		Tags = {"STAGE", "REPENTANCE", "MIRROR_TRANSITION"},
+		Tags = {"STAGE", "REPENTANCE", "MIRROR"},
 		-- FadeSpeed = 0.01,
 	},
 	["STAGE_MIRROR_DROSS"] = {
 		Music = Music.MUSIC_DROSS_REVERSE,
-		Tags = {"STAGE", "REPENTANCE", "MIRROR_TRANSITION"},
+		Tags = {"STAGE", "REPENTANCE", "MIRROR"},
 		-- FadeSpeed = 0.01,
 	},
 	
