@@ -18,6 +18,10 @@ if not REPENTANCE then return end
 		Fixed, but would like a NO_INTERRUPT tag
 	Dark home is overriden by normal home theme
 		Fixed
+	Greed mode music is wrong
+		Fixed
+	Secret room adjacent to Challenge Room or Miniboss (#47)
+		Fixed
 ]]--
 
 include("scripts.dump")

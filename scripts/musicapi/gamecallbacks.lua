@@ -314,7 +314,7 @@ mod:AddCallback(ModCallbacks.MC_POST_UPDATE, function(self)
 
 	for i=#MusicAPI.Doors.Secret,1,-1 do
 		local door = MusicAPI.Doors.Secret[i]
-		if door:GetVariant() == DoorVariant.DOOR_UNLOCKED then
+		if door:GetVariant() == DoorVariant.DOOR_UNLOCKED or door:GetVariant() == DoorVariant.DOOR_LOCKED_BARRED then
 			table.remove(MusicAPI.Doors.Secret, i)
 			if doJingle then
 				MusicAPI.PlayJingle("JINGLE_SECRET_ROOM")

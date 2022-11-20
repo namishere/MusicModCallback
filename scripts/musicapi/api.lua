@@ -521,9 +521,6 @@ do
 			if jump_table_func then
 				local a, b, c, d, e, f = jump_table_func()
 				if MusicAPI.IsTrackPlayable(a) then
-					if a == "JINGLE_TREASURE_ROOM" then
-						print("caught treasure in GetRoomEntryTrack")
-					end
 					return a, b, c, d, e, f
 				end
 			end
@@ -554,14 +551,14 @@ end
 MusicAPI.GetGreedFightTrack(LevelStage level_stage)
 ]]
 function MusicAPI.GetGreedFightTrack(level_stage)
-	return data.GreedThemes[level_stage or cache.Stage]
+	return data.GreedThemes[level_stage or cache.Stage] or "API_NO_ACTION"
 end
 
 --[[
 MusicAPI.GetGreedFightOutro(LevelStage level_stage)
 ]]
 function MusicAPI.GetGreedFightOutro(level_stage)
-	return data.GreedThemeOutros[level_stage or cache.Stage]
+	return data.GreedThemeOutros[level_stage or cache.Stage] or "API_NO_ACTION"
 end
 
 --[[
@@ -582,12 +579,16 @@ function MusicAPI.GetStateTrack(n)
 		for i=n, state.TrackCount or 16 do
 			local t = tracks[i]
 			if t then
-				if MusicAPI.IsTrackPlayable(t) then
-					return t
-				end
-				if state.Fallbacks then
-					t = state.Fallbacks[i]
-					if t then return t end
+				if t == "API_NO_ACTION" then
+					return
+				else
+					if MusicAPI.IsTrackPlayable(t) then
+						return t
+					end
+					if state.Fallbacks then
+						t = state.Fallbacks[i]
+						if t then return t end
+					end
 				end
 			end
 		end
@@ -1034,6 +1035,7 @@ do
 					local gridentity = cache.Room:GetGridEntity(i)
 					if gridentity and gridentity:GetType() == GridEntityType.GRID_PRESSURE_PLATE and gridentity:GetVariant() == 2 then
 						MusicAPI.StartGreedState()
+						print(dump(MusicAPI.State.Tracks))
 						break
 					end
 				end
@@ -1051,7 +1053,7 @@ Returns true if the track has music associated with it. False otherwise.
 ]]
 function MusicAPI.IsTrackPlayable(track_name)
 	local track = MusicAPI.Tracks[track_name]
-	if track then
+	if track_name ~= "API_NO_ACTION" and track then
 		if type(track.Music) == "number" then
 			return true
 		elseif type(track.Music) == "table" then

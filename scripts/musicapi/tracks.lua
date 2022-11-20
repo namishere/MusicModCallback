@@ -47,6 +47,10 @@ local track_table = {
 		Tags = {"API", "JINGLE"},
 		Persistence = 2,
 	},
+	["API_NO_ACTION"] = {
+		Music = -1,
+		Tags = {"API"},
+	},
 
 	["STAGE_NULL"] = {
 		Music = Music.MUSIC_MUSICAPI_NOTHING,
@@ -293,6 +297,10 @@ local track_table = {
 	},
 	["BOSS_BEAST"] = {
 		Music = Music.MUSIC_BEAST_BOSS,
+		Tags = {"BOSS", "REPENTANCE"}
+	},
+	["BOSS_GREEDMODE_EXTRA"] = {
+		Music = Music.MUSIC_SATAN_BOSS,
 		Tags = {"BOSS", "REPENTANCE"}
 	},
 	["ROOM_SHOP"] = {
