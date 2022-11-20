@@ -1127,6 +1127,9 @@ function MusicAPI.UseQueue()
 				print("track "..queue_1.." is a sound!")
 				MusicAPI.PlaySound(MusicAPI.Tracks[queue_1], id, fade_speed)
 			else
+				if MusicAPI.Tracks[queue_1].Tags.MIRROR_TRANSITION and (MusicAPI.Tracks[MusicAPI.CurrentTrack] and MusicAPI.Tracks[MusicAPI.CurrentTrack].Tags.MIRROR_TRANSITION) then
+					fade_speed = fade_speed/8
+				end
 				if fade_speed >= 1 then
 					MusicAPI.Play(id)
 				else

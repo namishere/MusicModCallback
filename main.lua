@@ -8,6 +8,7 @@ if not REPENTANCE then return end
 		Level:IsAscent()
 			Frankly might not really need to
 	Mirror transition fade speed
+		Done
 	Jingles should use SFX:
 		Treasure Room jingle
 		Secret Room discover
