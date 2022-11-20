@@ -519,8 +519,9 @@ local track_table = {
 	},
 	["JINGLE_STRANGE_DOOR"] = {
 		Music = Music.MUSIC_STRANGE_DOOR_JINGLE,
-		Tags = {"JINGLE", "REPENTANCE"},
-		FadeSpeed = 1,
+		Sound = Sound.SOUND_STRANGE_DOOR_JINGLE,
+		Tags = {"JINGLE", "REPENTANCE", "SFX"},
+		FadeLength = 135
 	},
 	
 	["INTRO_MOTHERS_SHADOW"] = {

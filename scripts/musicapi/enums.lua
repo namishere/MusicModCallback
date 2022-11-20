@@ -116,6 +116,7 @@ local Sound = {
 	SOUND_TREASUREROOM_ENTRY_2 = Isaac.GetSoundIdByName("Treasure Room Entry 2"),
 	SOUND_TREASUREROOM_ENTRY_3 = Isaac.GetSoundIdByName("Treasure Room Entry 3"),
 	SOUND_SECRETROOM_FIND = Isaac.GetSoundIdByName("Secret Room Find"),
+	SOUND_STRANGE_DOOR_JINGLE = Isaac.GetSoundIdByName("Strange Door Jingle"),
 }
 
 for _,n in pairs(NewMusic) do
