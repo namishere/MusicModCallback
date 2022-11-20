@@ -314,10 +314,10 @@ is no specific boss theme for this boss.
 ]]
 function MusicAPI.GetBossJingle(boss_id, ...)
 	boss_id = boss_id or cache.Room:GetBossID()
-	-- level_stage = level_stage or cache.Stage
-	-- local boss_idx = boss_id + level_stage << 16
-	-- return data.Bosses[boss_idx] or data.Bosses[boss_id] or MusicAPI.GetGenericBossTrack(...)
-	return data.BossJingles[boss_id] or MusicAPI.GetGenericBossJingle(...)
+	level_stage = level_stage or cache.Stage
+	local boss_idx = boss_id + (level_stage << 16)
+	return data.BossJingles[boss_idx] or data.BossJingles[boss_id] or MusicAPI.GetGenericBossJingle(...)
+	-- return data.BossJingles[boss_id] or MusicAPI.GetGenericBossJingle(...)
 end
 
 --[[
@@ -335,11 +335,11 @@ is no specific boss theme for this boss.
 ]]
 function MusicAPI.GetBossTrack(boss_id, ...)
 	boss_id = boss_id or cache.Room:GetBossID()
-	-- TAZ: This is for floor specific boss tracks, eg. BOSS_MOMS_HEART_MAUSOLEUM and BOSS_MOMS_HEART_WOMB. Feature is disabled for now.
-	-- level_stage = level_stage or cache.Stage
-	-- local boss_idx = boss_id + level_stage << 16
-	-- return data.Bosses[boss_idx] or data.Bosses[boss_id] or MusicAPI.GetGenericBossTrack(...)
-	return data.Bosses[boss_id] or MusicAPI.GetGenericBossTrack(...)
+	-- TAZ: This is for floor specific boss tracks, eg. BOSS_MOMS_HEART vs BOSS_MOMS_HEART_MAUSOLEUM.
+	level_stage = level_stage or cache.Stage
+	local boss_idx = boss_id + (level_stage << 16)
+	return data.Bosses[boss_idx] or data.Bosses[boss_id] or MusicAPI.GetGenericBossTrack(...)
+	--return data.Bosses[boss_id] or MusicAPI.GetGenericBossTrack(...)
 end
 
 --[[
@@ -357,10 +357,10 @@ is no specific boss theme for this boss.
 ]]
 function MusicAPI.GetBossClearJingle(boss_id, ...)
 	boss_id = boss_id or cache.Room:GetBossID()
-	-- level_stage = level_stage or cache.Stage
-	-- local boss_idx = boss_id + level_stage << 16
-	-- return data.Bosses[boss_idx] or data.Bosses[boss_id] or MusicAPI.GetGenericBossTrack(...)
-	return data.BossClearJingles[boss_id] or MusicAPI.GetGenericBossClearJingle(...)
+	level_stage = level_stage or cache.Stage
+	local boss_idx = boss_id + (level_stage << 16)
+	return data.BossClearJingles[boss_idx] or data.BossClearJingles[boss_id] or MusicAPI.GetGenericBossClearJingle(...)
+	-- return data.BossClearJingles[boss_id] or MusicAPI.GetGenericBossClearJingle(...)
 end
 
 --[[
@@ -498,6 +498,8 @@ do
 		
 		if cache.STATE_BACKWARDS_PATH then
 			return "STATE_ASCENT"
+		elseif cache.STATE_MAUSOLEUM_HEART_KILLED then
+			return "ROOM_BOSS_CLEAR_TWISTED"
 		elseif cache.STATE_MINESHAFT_ESCAPE then
 			return "STATE_MINESHAFT_ESCAPE"
 		end

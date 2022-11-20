@@ -230,10 +230,10 @@ local track_table = {
 	["BOSS_ANGEL"] = {
 		Tags = {"BOSS"}
 	},
-	-- ["BOSS_MOMS_HEART_MAUSOLEUM"] = {
-		-- Music = Music.MUSIC_MOMS_HEART_BOSS,
-		-- Tags = {"BOSS", "REPENTANCE"}
-	-- },
+	 ["BOSS_MOMS_HEART_MAUSOLEUM"] = {
+		Music = Music.MUSIC_MOMS_HEART_BOSS,
+		Tags = {"BOSS", "REPENTANCE"}
+	},
 	["BOSS_ISAAC"] = {
 		Music = Music.MUSIC_ISAAC_BOSS,
 		Tags = {"BOSS"}

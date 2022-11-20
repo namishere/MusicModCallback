@@ -123,14 +123,19 @@ bosses[63] = "BOSS_HUSH_FIRST"
 bosses[70] = "BOSS_DELIRIUM"
 bosses[88] = "BOSS_MOTHER"
 
---SPECIAL CASES: IF TRIGGERS DIFFER PER FLOOR (FEATURE IS CURRENTLY DISABLED)
--- bosses[8 + (LevelStage.STAGE3_2 << 16)] = "BOSS_MOMS_HEART_MAUSOLEUM"
+--SPECIAL CASES: IF TRIGGERS DIFFER PER FLOOR
+-- Nami: eh. hack
+bosses[8 + (LevelStage.STAGE3_1 << 16)] = "BOSS_MOMS_HEART_MAUSOLEUM"
+bosses[8 + (LevelStage.STAGE3_2 << 16)] = "BOSS_MOMS_HEART_MAUSOLEUM"
 
 local bossJingles = {}
 data.BossJingles = bossJingles
 
 local bossClearJingles = {}
 data.BossClearJingles = bossClearJingles
+
+bossClearJingles[8 + (LevelStage.STAGE3_1 << 16)] = "API_NOTHING"
+bossClearJingles[8 + (LevelStage.STAGE3_2 << 16)] = "API_NOTHING"
 
 local rooms = {}
 data.Rooms = rooms

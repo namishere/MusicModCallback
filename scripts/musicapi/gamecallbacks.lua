@@ -17,6 +17,10 @@ TODO:
 - Death cert crash
 ]]
 
+-- Nami: STATE_MAUSOLEUM_HEART_KILLED isn't set fast enough.. have to hack it for now.
+--		 Would be improved by giving bosses their own empty room themes too.
+local earlyHeartAttack = false
+
 local PostRender_State_JumpTable = { -- TAZ: Jump tables are used instead of having loads of elseifs. In theory, runs faster.
 	Boss = function()
 		if MusicAPI.State.Phase == 1 then
@@ -28,7 +32,11 @@ local PostRender_State_JumpTable = { -- TAZ: Jump tables are used instead of hav
 		
 		if MusicAPI.State.Phase == 2 then
 			if cache.CountBosses == 0 then
-				MusicAPI.PlayTrack(MusicAPI.GetStateTrack(3), "ROOM_BOSS_CLEAR")
+				local overJingle = "ROOM_BOSS_CLEAR"
+				if earlyHeartAttack then
+					overJingle = "ROOM_BOSS_CLEAR_NULL"
+				end
+				MusicAPI.PlayTrack(MusicAPI.GetStateTrack(3), overJingle)
 				MusicAPI.ClearState()
 			end
 		end
@@ -366,6 +374,18 @@ mod:AddCallback(ModCallbacks.MC_POST_NPC_DEATH, function(self, ent) -- Hush thin
 		MusicAPI.PlayTrack("BOSS_HUSH_FINAL")
 	end
 end, EntityType.ENTITY_ISAAC)
+
+
+mod:AddCallback(ModCallbacks.MC_POST_NPC_DEATH, function(self, ent) -- workaround for STATE_MAUSOLEUM_HEART_KILLED not being set early enough
+	if cache.Stage == LevelStage.STAGE3_1 or cache.Stage == LevelStage.STAGE3_2
+	and cache.StageType >= StageType.STAGETYPE_REPENTANCE then
+		earlyHeartAttack = true
+	end
+end, EntityType.ENTITY_MOMS_HEART)
+
+mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, function(self)
+	earlyHeartAttack = false
+end)
 
 mod:AddCallback(ModCallbacks.MC_NPC_UPDATE, function(self, ent) -- Hush thinks
 	if ent.I1 == 1 and ent.I2 == 0 then
