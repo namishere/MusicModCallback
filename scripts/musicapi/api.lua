@@ -92,7 +92,6 @@ function MusicAPI.AddTrack(name, tbl)
 		
 		track.Music = util.shallowCopy(track.Default.Music)
 		if track.Default.Sound ~= nil then
-			print("shallow copy sound")
 			track.Sound = util.shallowCopy(track.Default.Sound)
 			track.FadeLength = track.Default.FadeLength
 		end
@@ -1125,10 +1124,8 @@ function MusicAPI.UseQueue()
 		local id = MusicAPI.GetTrackMusic(queue_1)
 		id = MusicAPI.RunOnMusicCallbacks(queue_1, id)
 		if id then
-			print(dump(MusicAPI.Tracks[queue_1]))
 			local fade_speed = MusicAPI.Tracks[queue_1].FadeSpeed or 0.08
-			if MusicAPI.Tracks[queue_1].Tags.SFX then
-				print("track "..queue_1.." is a sound!")
+			if MusicAPI.Tracks[queue_1].Tags.SFX and MusicAPI.Tracks[queue_1].Sound ~= nil then
 				MusicAPI.PlaySound(MusicAPI.Tracks[queue_1], id, fade_speed)
 			else
 				if MusicAPI.Tracks[queue_1].Tags.MIRROR and (MusicAPI.Tracks[MusicAPI.CurrentTrack] and MusicAPI.Tracks[MusicAPI.CurrentTrack].Tags.STAGE)
@@ -1250,7 +1247,6 @@ function MusicAPI.GetTrackMusic(track_name)
 	local track = MusicAPI.Tracks[track_name]
 	if track then
 		if track.Tags.SFX then
-			print("caught sfx in GetTrackMusic")
 			local track_sound_type = type(track.Sound)
 			if track_sound_type == "number" then
 				return track.Sound
@@ -1387,7 +1383,7 @@ function MusicAPI.RunOnTrackCallbacksOnList(track_names, list_is_queue)
 			if type(ret) == "string" or type(ret) == "table" then
 				new_track_names[track_idx] = ret
 			else
-				new_track_names[track_idx] = false
+				new_track_names[track_idx] = track_str
 			end
 		end
 		
@@ -1398,29 +1394,28 @@ function MusicAPI.RunOnTrackCallbacksOnList(track_names, list_is_queue)
 					if type(b) == "table" then
 						addAll(b)
 					else
-						if b == "JINGLE_TREASURE_ROOM" then
-							print("caught treasure in RunOnTrackCallbacksOnList")
-						end
 						newer_track_names[#newer_track_names + 1] = b
 					end
 				end
 			end
 		end
 		addAll(new_track_names)
-		
+
 		return newer_track_names
 	else
 		for track_idx, track_str in pairs(track_names) do
 			local ret = MusicAPI.RunOnTrackCallbacks(track_str, state)
-			ret = ret[#ret]
-			if type(ret) == "string" then
-				track_names[track_idx] = ret
-			else
-				track_names[track_idx] = nil
+			if ret ~= nil then
+				ret = ret[#ret]
+				if type(ret) == "string" then
+					track_names[track_idx] = ret
+				else
+					track_names[track_idx] = track_str
+				end
 			end
 		end
 	end
-	
+
 	return track_names
 end
 
