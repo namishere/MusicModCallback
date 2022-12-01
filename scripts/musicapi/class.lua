@@ -72,6 +72,7 @@ function MusicAPI.Track:Init(tbl)
 	self.FadeLength = tbl.FadeLength or 0
 end
 
+--[[
 local LevelTracksGeneric = {
 	Stage = "STAGE_NULL",
 	Rooms = MusicAPI.RoomTracksGeneric,
@@ -80,6 +81,7 @@ local LevelTracksGeneric = {
 	Boss = MusicAPI.BossGeneric,
 	Miniboss = MusicAPI.MinibossGeneric
 }
+]]--
 
 MusicAPI.Stages = {}
 MusicAPI.Stage = MusicAPI.Class("Stage")

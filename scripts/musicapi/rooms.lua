@@ -1,22 +1,40 @@
 MusicAPI.Rooms = require "scripts.musicapi.enums.rooms"
 MusicAPI.Default.Rooms = MusicAPI.Rooms
 
+local game = MusicAPI.shared.game
+
 local FALLBACK = "API_DO_NOTHING"
 
-local function GetRoomType()
-	if StageAPI then
-		print("current roomtype: "..StageAPI.GetCurrentRoomType())
-		return StageAPI.GetCurrentRoomType()
+local GridRoom = {
+	[GridRooms.ROOM_GIDEON_DUNGEON_IDX] = "GideonDungeon",
+	[GridRooms.ROOM_GENESIS_IDX] = "GenesisRoom",
+	[GridRooms.ROOM_SECRET_SHOP_IDX] = "SecretShop",
+	[GridRooms.ROOM_ANGEL_SHOP_IDX] = "AngelShop"
+}
+
+--TODO: AddRoomType should also provide a function to identity the new room type to be used here!
+local function _getRoomType()
+	local res = (StageAPI and StageAPI.GetCurrentRoomType()) or game:GetRoom():GetType()
+	if type(res) == "number" then
+		if GridRoom[game:GetLevel():GetCurrentRoomIndex()] ~= nil then
+			res = GridRoom[game:GetLevel():GetCurrentRoomIndex()]
+		end
 	end
-	return MusicAPI.shared.game():GetRoom():GetType()
+	return res
 end
 
+--TODO: When reintegrating, make sure to return the state track if one is active
 local function _getRoomTrack(id, level, stageTable, genericTable)
 	if stageTable[level] == nil then
 		MusicAPI.LogMajor("_getRoomTrack(): Stage \"".. tostring(level).."\" not registered!")
 		if genericTable[id] then
-			MusicAPI.LogMinor("_getRoomTrack(): Defaulting to generic track \""..genericTable[id].."\" for RoomType \"".. tostring(id).."\"")
-			return genericTable[id]
+			if genericTable[id] == "API_STAGE" then
+				MusicAPI.LogMajor("_getRoomTrack(): RoomType \"".. tostring(id).."\" uses the stage track, but this stage is unregistered... nothing to return!")
+				return FALLBACK
+			else
+				MusicAPI.LogMinor("_getRoomTrack(): Defaulting to generic track \""..genericTable[id].."\" for RoomType \"".. tostring(id).."\"")
+				return genericTable[id]
+			end
 		else
 			MusicAPI.LogMajor("_getRoomTrack(): RoomType \"".. tostring(id).."\" not registered either... nothing to return!")
 			return FALLBACK
@@ -26,12 +44,20 @@ local function _getRoomTrack(id, level, stageTable, genericTable)
 			MusicAPI.LogMinor("_getRoomTrack(): Stage has AllRooms set, returning \"".. stageTable[level].Tracks.Rooms["AllRooms"].."\" for RoomType \"".. tostring(id).."\"")
 			return stageTable[level].Tracks.Rooms["AllRooms"]
 		elseif stageTable[level].Tracks.Rooms[id] then
+			if stageTable[level].Tracks.Rooms[id] == "API_STAGE" then
+				MusicAPI.LogMinor("_getRoomTrack(): Stage defined track for RoomType  \""..tostring(id).."\" is default stage track \""..stageTable[level].Tracks.Stage.."\"")
+				return stageTable[level].Tracks.Stage
+			end
 			MusicAPI.LogMinor("_getRoomTrack(): Using stage track \""..stageTable[level].Tracks.Rooms[id].."\" for RoomType \"".. tostring(id).."\"")
 			return stageTable[level].Tracks.Rooms[id]
 		end
 	end
 
 	if genericTable[id] then
+		if genericTable[id] == "API_STAGE" then
+			MusicAPI.LogMinor("_getRoomTrack(): Returning current stage track \""..stageTable[level].Tracks.Stage.."\" for RoomType \"".. tostring(id).."\"")
+			return stageTable[level].Tracks.Stage
+		end
 		MusicAPI.LogMinor("_getRoomTrack(): Using generic track \""..genericTable[id].."\" for RoomType \"".. tostring(id).."\"")
 		return genericTable[id]
 	end
@@ -41,14 +67,14 @@ local function _getRoomTrack(id, level, stageTable, genericTable)
 end
 
 function MusicAPI.GetDefaultRoomTrack(id, level)
-	if id == nil then id = GetRoomType() end
+	if id == nil then id = _getRoomType() end
 	if level == nil then level = MusicAPI.GetStageName() end
 
 	return _getRoomTrack(id, level, MusicAPI.Default.Stages, MusicAPI.Default.Rooms.GenericRooms)
 end
 
 function MusicAPI.GetRoomTrack(id, level)
-	if id == nil then id = GetRoomType() end
+	if id == nil then id = _getRoomType() end
 	if level == nil then level = MusicAPI.GetStageName() end
 
 	return _getRoomTrack(id, level, MusicAPI.Stages, MusicAPI.Rooms.GenericRooms)
@@ -79,12 +105,10 @@ function MusicAPI.AddTrackToRoom(id, track, stage)
 		else
 			MusicAPI.Stages[stage].Tracks.Rooms[id] = track
 		end
+	elseif MusicAPI.Rooms[id] == nil or type(MusicAPI.Rooms[id]) == "string" and string.match(MusicAPI.Rooms[id],"API_") then
+		MusicAPI.Rooms[id] = track
 	else
-		if MusicAPI.Rooms[id] then
-			_addToRoomTracks(id, track, MusicAPI.Rooms)
-		else
-			MusicAPI.Rooms[id] = track
-		end
+		_addToRoomTracks(id, track, MusicAPI.Rooms)
 	end
 end
 
