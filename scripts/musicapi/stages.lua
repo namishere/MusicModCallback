@@ -29,7 +29,7 @@ function MusicAPI.GetStageName(stage, stageType)
 			return leveltable[stage][stageType]
 		end
 	end
-	MusicAPI.Error("MusicAPI.GetStageName(): couldn't find a Stage with LevelStage "..stage.." and StageType "..stageType.."!")
+	MusicAPI.error("MusicAPI.GetStageName(): couldn't find a Stage with LevelStage "..stage.." and StageType "..stageType.."!")
 end
 
 function MusicAPI.GetStage(arg1, arg2)
@@ -46,7 +46,7 @@ function MusicAPI.GetStage(arg1, arg2)
 		return MusicAPI.Stages[string]
 	end
 
-	MusicAPI.Error("MusicAPI.GetStage(): Stage \"".. tostring(string).."\" not registered!")
+	MusicAPI.error("MusicAPI.GetStage(): Stage \"".. tostring(string).."\" not registered!")
 end
 
 function MusicAPI._priv.RegisterStages()
@@ -73,7 +73,7 @@ function MusicAPI.ResetStage(arg1, arg2)
 		MusicAPI.Stages[name] = MusicAPI.Default.Stages[name]
 	end
 
-	MusicAPI.Error("MusicAPI.ResetStage(): Stage \"".. tostring(string).."\" not registered!")
+	MusicAPI.error("MusicAPI.ResetStage(): Stage \"".. tostring(string).."\" not registered!")
 end
 
 function MusicAPI.ResetStages()

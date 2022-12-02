@@ -10,10 +10,6 @@ MusicAPI.Default = {
 	Tracks = {}
 }
 
-if MusicAPI.debug then
-	require "scripts.dump"
-end
-
 function MusicAPI.LogMajor(string)
 	print("[MusicAPI] "..string)
 	Isaac.DebugString(string)
@@ -26,7 +22,11 @@ function MusicAPI.LogMinor(string)
 	end
 end
 
-function MusicAPI.Error(string)
+function MusicAPI.assert(arg, string)
+	assert(arg, "[MusicAPI] "..string)
+end
+
+function MusicAPI.error(string)
 	error("[MusicAPI] "..string)
 end
 
@@ -49,6 +49,7 @@ function MusicAPI.Merged(...)
     return t
 end
 
+require "scripts.dump"
 require "scripts.musicapi.class"
 require "scripts.musicapi.stages"
 require "scripts.musicapi.rooms"

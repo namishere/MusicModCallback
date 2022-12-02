@@ -86,7 +86,10 @@ local LevelTracksGeneric = {
 MusicAPI.Stages = {}
 MusicAPI.Stage = MusicAPI.Class("Stage")
 function MusicAPI.Stage:Init(name, stageFunc, tracks)
+	MusicAPI.assert(name, "MusicAPI.Stage:Init(): Must provide a name to init a stage!")
+
 	self.IsCurrentStage = stageFunc or function() return false end
+	self.Tracks = {}
 	if tracks ~= nil then
 		self.Tracks = tracks
 	end
