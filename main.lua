@@ -22,27 +22,13 @@ function MusicAPI.LogMinor(string)
 	end
 end
 
-function MusicAPI.assert(arg, string)
-	assert(arg, "[MusicAPI] "..string)
-end
-
-function MusicAPI.error(string)
-	error("[MusicAPI] "..string)
-end
-
-function MusicAPI.Merged(...)
+function MusicAPI.DeepCopy(tbl)
     local t = {}
-    for _, tbl in ipairs({...}) do
-        local orderedIndices = {}
-        for i, v in ipairs(tbl) do
-            orderedIndices[i] = true
-            t[#t + 1] = v
-        end
-
-        for k, v in pairs(tbl) do
-            if not orderedIndices[k] then
-                t[k] = v
-            end
+    for k, v in pairs(tbl) do
+        if type(v) == "table" then
+            t[k] = MusicAPI.DeepCopy(v)
+        else
+            t[k] = v
         end
     end
 
@@ -50,6 +36,6 @@ function MusicAPI.Merged(...)
 end
 
 require "scripts.dump"
-require "scripts.musicapi.class"
+--require "scripts.musicapi.class"
 require "scripts.musicapi.stages"
 require "scripts.musicapi.rooms"

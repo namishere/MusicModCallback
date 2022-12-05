@@ -1,6 +1,6 @@
 local stagetable = require "scripts.musicapi.enums.stages"
 local leveltable = require "scripts.musicapi.enums.levels"
-print("I exist!")
+MusicAPI.Stages = {}
 
 function MusicAPI._priv.IsBaseStage(stageType, ...)
 	local level = MusicAPI.shared.game:GetLevel()
@@ -29,7 +29,7 @@ function MusicAPI.GetStageName(stage, stageType)
 			return leveltable[stage][stageType]
 		end
 	end
-	MusicAPI.error("MusicAPI.GetStageName(): couldn't find a Stage with LevelStage "..stage.." and StageType "..stageType.."!")
+	error("MusicAPI.GetStageName(): couldn't find a Stage with LevelStage "..stage.." and StageType "..stageType.."!")
 end
 
 function MusicAPI.GetStage(arg1, arg2)
@@ -46,9 +46,10 @@ function MusicAPI.GetStage(arg1, arg2)
 		return MusicAPI.Stages[string]
 	end
 
-	MusicAPI.error("MusicAPI.GetStage(): Stage \"".. tostring(string).."\" not registered!")
+	error("MusicAPI.GetStage(): Stage \"".. tostring(string).."\" not registered!")
 end
 
+--[[
 function MusicAPI._priv.RegisterStages()
 	for k,v in pairs(stagetable) do
 		MusicAPI.Stages[k] = MusicAPI.Stage(k, v.IsCurrentStage, v.Tracks)
@@ -57,6 +58,23 @@ end
 
 function MusicAPI.RegisterStage(name, func, tracks)
 	MusicAPI.Stages[name] = MusicAPI.Stage(name, func, tracks)
+end
+]]--
+
+function MusicAPI._priv.RegisterStages()
+	for k,v in pairs(stagetable) do
+		MusicAPI.RegisterStage(k, v.IsCurrentStage, v.Tracks)
+	end
+end
+
+function MusicAPI.RegisterStage(name, func, tracks)
+	assert(name, "MusicAPI.RegisterStage(): Must provide a name to init a stage!")
+	assert(MusicAPI.Stages[name] == nil, "MusicAPI.RegisterStage(): Stage \""..name.."\" is already registered!")
+	MusicAPI.Stages[name] = {
+		IsCurrentStage = func or function() return false end,
+		Tracks = tracks or {}
+	}
+	MusicAPI.Default.Stages[name] = MusicAPI.DeepCopy(MusicAPI.Stages[name])
 end
 
 function MusicAPI.ResetStage(arg1, arg2)
@@ -69,11 +87,12 @@ function MusicAPI.ResetStage(arg1, arg2)
 		string = MusicAPI.GetStageName()
 	end
 
+	MusicAPI.LogMinor("MusicAPI.ResetStage(): attempting to reset Stage \"".. tostring(string).."\"")
 	if MusicAPI.Stages[string] ~= nil then
-		MusicAPI.Stages[name] = MusicAPI.Default.Stages[name]
+		MusicAPI.Stages[string] = MusicAPI.DeepCopy(MusicAPI.Default.Stages[string])
+	else
+		error("MusicAPI.ResetStage(): Stage \"".. tostring(string).."\" not registered!")
 	end
-
-	MusicAPI.error("MusicAPI.ResetStage(): Stage \"".. tostring(string).."\" not registered!")
 end
 
 function MusicAPI.ResetStages()

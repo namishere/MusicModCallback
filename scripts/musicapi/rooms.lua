@@ -112,37 +112,37 @@ end
 
 function MusicAPI.GetChallengeRoomTrack(level)
 	if level == nil then level = MusicAPI.GetStageName() end
-	MusicAPI.assert(MusicAPI.Stages[level], "MusicAPI.GetChallengeRoomTrack(): Stage \"".. tostring(level).."\" not registered!")
+	assert(MusicAPI.Stages[level], "MusicAPI.GetChallengeRoomTrack(): Stage \"".. tostring(level).."\" not registered!")
 	return _handleStateTrackGet(level, MusicAPI.Stages[level].Tracks.Challenge, MusicAPI.Rooms.GenericChallenge)
 end
 
 function MusicAPI.GetBossChallengeRoomTrack(level)
 	if level == nil then level = MusicAPI.GetStageName() end
-	MusicAPI.assert(MusicAPI.Stages[level], "MusicAPI.GetBossChallengeRoomTrack(): Stage \"".. tostring(level).."\" not registered!")
+	assert(MusicAPI.Stages[level], "MusicAPI.GetBossChallengeRoomTrack(): Stage \"".. tostring(level).."\" not registered!")
 	return _handleStateTrackGet(level, MusicAPI.Stages[level].Tracks.BossChallenge, MusicAPI.Rooms.GenericBossChallenge)
 end
 
 function MusicAPI.GetBossRushTrack(level)
 	if level == nil then level = MusicAPI.GetStageName() end
-	MusicAPI.assert(MusicAPI.Stages[level], "MusicAPI.GetBossRushTrack(): Stage \"".. tostring(level).."\" not registered!")
+	assert(MusicAPI.Stages[level], "MusicAPI.GetBossRushTrack(): Stage \"".. tostring(level).."\" not registered!")
 	return _handleStateTrackGet(level, MusicAPI.Stages[level].Tracks.BossRush, MusicAPI.Rooms.GenericBossRush)
 end
 
 function MusicAPI.GetDefaultChallengeRoomTrack(level)
 	if level == nil then level = MusicAPI.GetStageName() end
-	MusicAPI.assert(MusicAPI.Stages[level], "MusicAPI.GetChallengeRoomTrack(): Stage \"".. tostring(level).."\" not registered!")
+	assert(MusicAPI.Stages[level], "MusicAPI.GetChallengeRoomTrack(): Stage \"".. tostring(level).."\" not registered!")
 	return _handleStateTrackGet(level, MusicAPI.Default.Stages[level].Tracks.Challenge, MusicAPI.Default.Rooms.GenericChallenge)
 end
 
 function MusicAPI.GetDefaultBossChallengeRoomTrack(level)
 	if level == nil then level = MusicAPI.GetStageName() end
-	MusicAPI.assert(MusicAPI.Stages[level], "MusicAPI.GetBossChallengeRoomTrack(): Stage \"".. tostring(level).."\" not registered!")
+	assert(MusicAPI.Stages[level], "MusicAPI.GetBossChallengeRoomTrack(): Stage \"".. tostring(level).."\" not registered!")
 	return _handleStateTrackGet(level, MusicAPI.Default.Stages[level].Tracks.BossChallenge, MusicAPI.Default.Rooms.GenericBossChallenge)
 end
 
 function MusicAPI.GetDefaultBossRushTrack(level)
 	if level == nil then level = MusicAPI.GetStageName() end
-	MusicAPI.assert(MusicAPI.Stages[level], "MusicAPI.GetBossRushTrack(): Stage \"".. tostring(level).."\" not registered!")
+	assert(MusicAPI.Stages[level], "MusicAPI.GetBossRushTrack(): Stage \"".. tostring(level).."\" not registered!")
 	return _handleStateTrackGet(level, MusicAPI.Default.Stages[level].Tracks.BossRush, MusicAPI.Default.Rooms.GenericBossRush)
 end
 
@@ -155,19 +155,23 @@ local function _handleStateTrackAdd(table, state, track)
 end
 
 local function _handleStateTrackSet(table, state, track)
+	local ret = {}
 	if not table then
-		table = { state = track }
+		ret = { [state] = track }
 	else
-		table[state] = track
+		ret = table
+		ret[state] = track
 	end
+	return ret
 end
 
 local function _handleStageStateTrackReset(stageTable, genericTable, state, track)
-	if stageTable then
-		if stageTable[state] then
-			stageTable[state] = genericTable[state]
-		end
+	local ret = nil
+	if stageTable and stageTable[state]then
+		ret = stageTable
+		ret[state] = genericTable[state]
 	end
+	return ret
 end
 
 local function _handleStageRoomReset(stageTable, genericTable)
@@ -184,33 +188,33 @@ MusicAPI.ChallengeStates = {
 	["Empty"] = 4
 }
 
-function MusicAPI.AddTrackToChallengeRoom(state, track, stage)
-	MusicAPI.assert(MusicAPI.ChallengeStates[state], "MusicAPI.AddTrackToChallengeRoom(): State \"".. tostring(state).."\" is invalid!")
+function MusicAPI.AddChallengeRoomTrack(state, track, stage)
+	assert(MusicAPI.ChallengeStates[state], "MusicAPI.AddChallengeRoomTrack(): State \"".. tostring(state).."\" is invalid!")
 
 	if stage then
-		MusicAPI.assert(MusicAPI.Stages[stage], "MusicAPI.AddTrackToChallengeRoom(): Stage \"".. tostring(stage).."\" is unregisted!")
+		assert(MusicAPI.Stages[stage], "MusicAPI.AddChallengeRoomTrack(): Stage \"".. tostring(stage).."\" is unregisted!")
 		_handleStateTrackAdd(MusicAPI.Stages[stage].Tracks.Challenge, state, track)
 	else
 		_handleStateTrackAdd(MusicAPI.Rooms.GenericChallenge, state, track)
 	end
 end
 
-function MusicAPI.AddTrackToBossChallengeRoom(state, track, stage)
-	MusicAPI.assert(MusicAPI.ChallengeStates[state], "MusicAPI.AddTrackToBossChallengeRoom(): State \"".. tostring(state).."\" is invalid!")
+function MusicAPI.AddBossChallengeRoomTrack(state, track, stage)
+	assert(MusicAPI.ChallengeStates[state], "MusicAPI.AddBossChallengeRoomTrack(): State \"".. tostring(state).."\" is invalid!")
 
 	if stage then
-		MusicAPI.assert(MusicAPI.Stages[stage], "MusicAPI.AddTrackToChallengeRoom(): Stage \"".. tostring(stage).."\" is unregisted!")
+		assert(MusicAPI.Stages[stage], "MusicAPI.AddBossChallengeRoomTrack(): Stage \"".. tostring(stage).."\" is unregisted!")
 		_handleStateTrackAdd(MusicAPI.Stages[stage].Tracks.BossChallenge, state, track)
 	else
 		_handleStateTrackAdd(MusicAPI.Rooms.GenericBossChallenge, state, track)
 	end
 end
 
-function MusicAPI.AddTrackToBossRush(state, track, stage)
-	MusicAPI.assert(MusicAPI.ChallengeStates[state], "MusicAPI.AddTrackToBossRush(): State \"".. tostring(state).."\" is invalid!")
+function MusicAPI.AddBossRushTrack(state, track, stage)
+	assert(MusicAPI.ChallengeStates[state], "MusicAPI.AddBossRushTrack(): State \"".. tostring(state).."\" is invalid!")
 
 	if stage then
-		MusicAPI.assert(MusicAPI.Stages[stage], "MusicAPI.AddTrackToChallengeRoom(): Stage \"".. tostring(stage).."\" is unregisted!")
+		assert(MusicAPI.Stages[stage], "MusicAPI.AddBossRushTrack(): Stage \"".. tostring(stage).."\" is unregisted!")
 		_handleStateTrackAdd(MusicAPI.Stages[stage].Tracks.BossRush, state, track)
 	else
 		_handleStateTrackAdd(MusicAPI.Rooms.GenericBossRush, state, track)
@@ -218,67 +222,66 @@ function MusicAPI.AddTrackToBossRush(state, track, stage)
 end
 
 function MusicAPI.SetChallengeRoomTrack(state, track, stage)
-	MusicAPI.assert(MusicAPI.ChallengeStates[state], "MusicAPI.SetChallengeRoomTrack(): State \"".. tostring(state).."\" is invalid!")
+	assert(MusicAPI.ChallengeStates[state], "MusicAPI.SetChallengeRoomTrack(): State \"".. tostring(state).."\" is invalid!")
 
 	if stage then
-		MusicAPI.assert(MusicAPI.Stages[stage], "MusicAPI.SetChallengeRoomTrack(): Stage \"".. tostring(stage).."\" is unregisted!")
-		_handleStateTrackSet(MusicAPI.Stages[stage].Tracks.Challenge, state, track)
-		end
+		assert(MusicAPI.Stages[stage], "MusicAPI.SetChallengeRoomTrack(): Stage \"".. tostring(stage).."\" is unregisted!")
+		MusicAPI.Stages[stage].Tracks.Challenge = _handleStateTrackSet(MusicAPI.Stages[stage].Tracks.Challenge, state, track)
 	else
 		MusicAPI.Rooms.GenericChallenge[state] = track
 	end
 end
 
 function MusicAPI.SetBossChallengeRoomTrack(state, track, stage)
-	MusicAPI.assert(MusicAPI.ChallengeStates[state], "MusicAPI.SetBossChallengeRoomTrack(): State \"".. tostring(state).."\" is invalid!")
+	assert(MusicAPI.ChallengeStates[state], "MusicAPI.SetBossChallengeRoomTrack(): State \"".. tostring(state).."\" is invalid!")
 
 	if stage then
-		MusicAPI.assert(MusicAPI.Stages[stage], "MusicAPI.SetBossChallengeRoomTrack(): Stage \"".. tostring(stage).."\" is unregisted!")
-		_handleStateTrackSet(MusicAPI.Stages[stage].Tracks.BossChallenge, state, track)
+		assert(MusicAPI.Stages[stage], "MusicAPI.SetBossChallengeRoomTrack(): Stage \"".. tostring(stage).."\" is unregisted!")
+		MusicAPI.Stages[stage].Tracks.BossChallenge = _handleStateTrackSet(MusicAPI.Stages[stage].Tracks.BossChallenge, state, track)
 	else
 		MusicAPI.Rooms.GenericBossChallenge[state] = track
 	end
 end
 
 function MusicAPI.SetBossRushTrack(state, track, stage)
-	MusicAPI.assert(MusicAPI.ChallengeStates[state], "MusicAPI.SetBossRushTrack(): State \"".. tostring(state).."\" is invalid!")
+	assert(MusicAPI.ChallengeStates[state], "MusicAPI.SetBossRushTrack(): State \"".. tostring(state).."\" is invalid!")
 
 	if stage then
-		MusicAPI.assert(MusicAPI.Stages[stage], "MusicAPI.SetBossRushTrack(): Stage \"".. tostring(stage).."\" is unregisted!")
-		_handleStateTrackSet(MusicAPI.Stages[stage].Tracks.BossRush, state, track)
+		assert(MusicAPI.Stages[stage], "MusicAPI.SetBossRushTrack(): Stage \"".. tostring(stage).."\" is unregisted!")
+		MusicAPI.Stages[stage].Tracks.BossRush = _handleStateTrackSet(MusicAPI.Stages[stage].Tracks.BossRush, state, track)
 	else
 		MusicAPI.Rooms.GenericBossRush[state] = track
 	end
 end
 
-function MusicAPI.ResetChallengeRoomStateTrack(state, stage)
-	MusicAPI.assert(MusicAPI.ChallengeStates[state], "MusicAPI.ResetChallengeRoomStateTrack(): State \"".. tostring(state).."\" is invalid!")
+function MusicAPI.ResetChallengeRoomState(state, stage)
+	assert(MusicAPI.ChallengeStates[state], "MusicAPI.ResetChallengeRoomState(): State \"".. tostring(state).."\" is invalid!")
 
 	if stage then
-		MusicAPI.assert(MusicAPI.Stages[stage], "MusicAPI.ResetChallengeRoomStateTrack(): Stage \"".. tostring(stage).."\" is unregisted!")
-		_handleStageStateTrackReset(MusicAPI.Stages[stage].Tracks.Challenge, MusicAPI.Default.Stages[stage].Tracks.Challenge, state, track)
+		assert(MusicAPI.Stages[stage], "MusicAPI.ResetChallengeRoomState(): Stage \"".. tostring(stage).."\" is unregisted!")
+		MusicAPI.Stages[stage].Tracks.Challenge = _handleStageStateTrackReset(MusicAPI.Stages[stage].Tracks.Challenge, MusicAPI.Default.Stages[stage].Tracks.Challenge, state, track)
 	else
 		MusicAPI.Rooms.GenericChallenge[state] = MusicAPI.Default.Rooms.GenericChallenge[state]
 	end
 end
 
-function MusicAPI.ResetBossChallengeRoomStateTrack(state, stage)
-	MusicAPI.assert(MusicAPI.ChallengeStates[state], "MusicAPI.ResetBossChallengeRoomStateTrack(): State \"".. tostring(state).."\" is invalid!")
+function MusicAPI.ResetBossChallengeRoomState(state, stage)
+	assert(MusicAPI.ChallengeStates[state], "MusicAPI.ResetBossChallengeRoomState(): State \"".. tostring(state).."\" is invalid!")
 
 	if stage then
-		MusicAPI.assert(MusicAPI.Stages[stage], "MusicAPI.ResetBossChallengeRoomStateTrack(): Stage \"".. tostring(stage).."\" is unregisted!")
-		_handleStageStateTrackReset(MusicAPI.Stages[stage].Tracks.BossChallenge, MusicAPI.Default.Stages[stage].Tracks.BossChallenge, state, track)
+		assert(MusicAPI.Stages[stage], "MusicAPI.ResetBossChallengeRoomState(): Stage \"".. tostring(stage).."\" is unregisted!")
+		MusicAPI.Stages[stage].Tracks.BossChallenge = _handleStageStateTrackReset(MusicAPI.Stages[stage].Tracks.BossChallenge, MusicAPI.Default.Stages[stage].Tracks.BossChallenge, state, track)
 	else
 		MusicAPI.Rooms.GenericChallenge[state] = MusicAPI.Default.Rooms.GenericBossChallenge[state]
 	end
 end
 
-function MusicAPI.ResetBossRushStateTrack(state, stage)
-	MusicAPI.assert(MusicAPI.ChallengeStates[state], "MusicAPI.ResetBossRushStateTrack(): State \"".. tostring(state).."\" is invalid!")
+function MusicAPI.ResetBossRushState(state, stage)
+	assert(MusicAPI.ChallengeStates[state], "MusicAPI.ResetBossRushState(): State \"".. tostring(state).."\" is invalid!")
 
 	if stage then
-		MusicAPI.assert(MusicAPI.Stages[stage], "MusicAPI.ResetBossRushStateTrack(): Stage \"".. tostring(stage).."\" is unregisted!")
-		_handleStageStateTrackReset(MusicAPI.Stages[stage].Tracks.BossRush, MusicAPI.Default.Stages[stage].Tracks.BossRush, state, track)
+		assert(MusicAPI.Stages[stage], "MusicAPI.ResetBossRushState(): Stage \"".. tostring(stage).."\" is unregisted!")
+		MusicAPI.Stages[stage].Tracks.BossRush = _handleStageStateTrackReset(MusicAPI.Stages[stage].Tracks.BossRush, MusicAPI.Default.Stages[stage].Tracks.BossRush, state, track)
 	else
 		MusicAPI.Rooms.GenericBossRush[state] = MusicAPI.Default.Rooms.GenericBossRush[state]
 	end
@@ -286,7 +289,7 @@ end
 
 function MusicAPI.ResetChallengeRoom(stage)
 	if stage then
-		MusicAPI.assert(MusicAPI.Stages[stage], "MusicAPI.ResetChallengeRoom(): Stage \"".. tostring(stage).."\" is unregisted!")
+		assert(MusicAPI.Stages[stage], "MusicAPI.ResetChallengeRoom(): Stage \"".. tostring(stage).."\" is unregisted!")
 		_handleStageRoomReset(MusicAPI.Stages[stage].Tracks.Challenge, MusicAPI.Default.Stages[stage].Tracks.Challenge)
 	else
 		MusicAPI.Rooms.GenericChallenge = MusicAPI.Default.Rooms.GenericChallenge
@@ -295,7 +298,7 @@ end
 
 function MusicAPI.ResetBossChallengeRoom(stage)
 	if stage then
-		MusicAPI.assert(MusicAPI.Stages[stage], "MusicAPI.ResetBossChallengeRoom(): Stage \"".. tostring(stage).."\" is unregisted!")
+		assert(MusicAPI.Stages[stage], "MusicAPI.ResetBossChallengeRoom(): Stage \"".. tostring(stage).."\" is unregisted!")
 		_handleStageRoomReset(MusicAPI.Stages[stage].Tracks.BossChallenge, MusicAPI.Default.Stages[stage].Tracks.BossChallenge)
 	else
 		MusicAPI.Rooms.GenericBossChallenge = MusicAPI.Default.Rooms.GenericBossChallenge
@@ -304,15 +307,134 @@ end
 
 function MusicAPI.ResetBossRush(stage)
 	if stage then
-		MusicAPI.assert(MusicAPI.Stages[stage], "MusicAPI.ResetBossRush(): Stage \"".. tostring(stage).."\" is unregisted!")
+		assert(MusicAPI.Stages[stage], "MusicAPI.ResetBossRush(): Stage \"".. tostring(stage).."\" is unregisted!")
 		_handleStageRoomReset(MusicAPI.Stages[stage].Tracks.BossRush, MusicAPI.Default.Stages[stage].Tracks.BossRush)
 	else
 		MusicAPI.Rooms.GenericBossRush = MusicAPI.Default.Rooms.GenericBossRush
 	end
 end
 
+--------------------------------------------------
+
+MusicAPI.BossStates = {
+	["StartJingle"] = 1,
+	["Active"] = 2,
+	["OverJingle"] = 3,
+	["Empty"] = 4
+}
+
+function MusicAPI.GetBossTrack(level)
+	if level == nil then level = MusicAPI.GetStageName() end
+	assert(MusicAPI.Stages[level], "MusicAPI.GetBossTrack(): Stage \"".. tostring(level).."\" not registered!")
+	return _handleStateTrackGet(level, MusicAPI.Stages[level].Tracks.Boss, MusicAPI.Rooms.GenericBoss)
+end
+
+function MusicAPI.GetDefaultBossTrack(level)
+	if level == nil then level = MusicAPI.GetStageName() end
+	assert(MusicAPI.Stages[level], "MusicAPI.GetDefaultBossTrack(): Stage \"".. tostring(level).."\" not registered!")
+	return _handleStateTrackGet(level, MusicAPI.Default.Stages[level].Tracks.Boss, MusicAPI.Default.Rooms.GenericBoss)
+end
+
+function MusicAPI.AddBossTrack(state, track, stage)
+	assert(MusicAPI.BossStates[state], "MusicAPI.AddBossTrack(): State \"".. tostring(state).."\" is invalid!")
+
+	if stage then
+		assert(MusicAPI.Stages[stage], "MusicAPI.AddBossTrack(): Stage \"".. tostring(stage).."\" is unregisted!")
+		_handleStateTrackAdd(MusicAPI.Stages[stage].Tracks.Boss, state, track)
+	else
+		_handleStateTrackAdd(MusicAPI.Rooms.GenericBoss, state, track)
+	end
+end
+
+function MusicAPI.SetBossTrack(state, track, stage)
+	assert(MusicAPI.BossStates[state], "MusicAPI.SetBossTrack(): State \"".. tostring(state).."\" is invalid!")
+
+	if stage then
+		assert(MusicAPI.Stages[stage], "MusicAPI.SetBossTrack(): Stage \"".. tostring(stage).."\" is unregisted!")
+		MusicAPI.Stages[stage].Tracks.Boss = _handleStateTrackSet(MusicAPI.Stages[stage].Tracks.Boss, state, track)
+	else
+		MusicAPI.Rooms.GenericBoss[state] = track
+	end
+end
+
+function MusicAPI.ResetBossState(state, stage)
+	assert(MusicAPI.BossStates[state], "MusicAPI.ResetBossState(): State \"".. tostring(state).."\" is invalid!")
+
+	if stage then
+		assert(MusicAPI.Stages[stage], "MusicAPI.ResetBossState(): Stage \"".. tostring(stage).."\" is unregisted!")
+		MusicAPI.Stages[stage].Tracks.Boss = _handleStageStateTrackReset(MusicAPI.Stages[stage].Tracks.Boss, MusicAPI.Default.Stages[stage].Tracks.Boss, state, track)
+	else
+		MusicAPI.Rooms.GenericBoss[state] = MusicAPI.Default.Rooms.GenericBoss[state]
+	end
+end
+
+function MusicAPI.ResetBoss(stage)
+	if stage then
+		assert(MusicAPI.Stages[stage], "MusicAPI.ResetBoss(): Stage \"".. tostring(stage).."\" is unregisted!")
+		_handleStageRoomReset(MusicAPI.Stages[stage].Tracks.Boss, MusicAPI.Default.Stages[stage].Tracks.Boss)
+	else
+		MusicAPI.Rooms.GenericBoss = MusicAPI.Default.Rooms.GenericBoss
+	end
+end
+
+function MusicAPI.GetMinibossTrack(level)
+	if level == nil then level = MusicAPI.GetStageName() end
+	assert(MusicAPI.Stages[level], "MusicAPI.GetMinibossTrack(): Stage \"".. tostring(level).."\" not registered!")
+	return _handleStateTrackGet(level, MusicAPI.Stages[level].Tracks.Miniboss, MusicAPI.Rooms.GenericMiniboss)
+end
+
+function MusicAPI.GetDefaultMinibossTrack(level)
+	if level == nil then level = MusicAPI.GetStageName() end
+	assert(MusicAPI.Stages[level], "MusicAPI.GetDefaultMinibossTrack(): Stage \"".. tostring(level).."\" not registered!")
+	return _handleStateTrackGet(level, MusicAPI.Default.Stages[level].Tracks.Miniboss, MusicAPI.Default.Rooms.Miniboss)
+end
+
+function MusicAPI.AddMinibossTrack(state, track, stage)
+	assert(MusicAPI.BossStates[state], "MusicAPI.AddMinibossTrack(): State \"".. tostring(state).."\" is invalid!")
+
+	if stage then
+		assert(MusicAPI.Stages[stage], "MusicAPI.AddMinibossTrack(): Stage \"".. tostring(stage).."\" is unregisted!")
+		_handleStateTrackAdd(MusicAPI.Stages[stage].Tracks.Miniboss, state, track)
+	else
+		_handleStateTrackAdd(MusicAPI.Rooms.GenericMiniboss, state, track)
+	end
+end
+
+function MusicAPI.SetMinibossTrack(state, track, stage)
+	assert(MusicAPI.BossStates[state], "MusicAPI.SetMinibossTrack(): State \"".. tostring(state).."\" is invalid!")
+
+	if stage then
+		assert(MusicAPI.Stages[stage], "MusicAPI.SetMinibossTrack(): Stage \"".. tostring(stage).."\" is unregisted!")
+		MusicAPI.Stages[stage].Tracks.Miniboss = _handleStateTrackSet(MusicAPI.Stages[stage].Tracks.Miniboss, state, track)
+	else
+		MusicAPI.Rooms.GenericMiniboss[state] = track
+	end
+end
+
+function MusicAPI.ResetMinibossState(state, stage)
+	assert(MusicAPI.BossStates[state], "MusicAPI.ResetMinibossState(): State \"".. tostring(state).."\" is invalid!")
+
+	if stage then
+		assert(MusicAPI.Stages[stage], "MusicAPI.ResetMinibossState(): Stage \"".. tostring(stage).."\" is unregisted!")
+		MusicAPI.Stages[stage].Tracks.Boss = _handleStageStateTrackReset(MusicAPI.Stages[stage].Tracks.Miniboss, MusicAPI.Default.Stages[stage].Tracks.Miniboss, state, track)
+	else
+		MusicAPI.Rooms.GenericMiniboss[state] = MusicAPI.Default.Rooms.GenericMiniboss[state]
+	end
+end
+
+function MusicAPI.ResetMiniboss(stage)
+	if stage then
+		assert(MusicAPI.Stages[stage], "MusicAPI.ResetMiniboss(): Stage \"".. tostring(stage).."\" is unregisted!")
+		_handleStageRoomReset(MusicAPI.Stages[stage].Tracks.Miniboss, MusicAPI.Default.Stages[stage].Tracks.Miniboss)
+	else
+		MusicAPI.Rooms.GenericMiniboss = MusicAPI.Default.Rooms.GenericMiniboss
+	end
+end
+
+--------------------------------------------------
+
 function MusicAPI.AddRoomType(id, track)
-	MusicAPI.assert(MusicAPI.Rooms[id] == nil, "MusicAPI.AddRoomType(): RoomType \"".. tostring(stage).."\" is already registered!")
+	assert(MusicAPI.Rooms[id] == nil, "MusicAPI.AddRoomType(): RoomType \"".. tostring(stage).."\" is already registered!")
 	MusicAPI.Rooms[id] = track
 	if MusicAPI.Default.Rooms[id] == nil then
 		MusicAPI.Default.Rooms[id] = track
@@ -321,7 +443,7 @@ end
 
 function MusicAPI.AddTrackToRoom(id, track, stage)
 	if stage then
-		MusicAPI.assert(MusicAPI.Stages[stage], "MusicAPI.AddTrackToRoom(): Stage \"".. tostring(stage).."\" is unregisted!")
+		assert(MusicAPI.Stages[stage], "MusicAPI.AddTrackToRoom(): Stage \"".. tostring(stage).."\" is unregisted!")
 		if MusicAPI.Stages[stage].Tracks.Rooms[id] then
 			MusicAPI.Stages[stage].Tracks.Rooms[id] = _addToRoomTracks(id, track, MusicAPI.Stages[stage].Tracks.Rooms)
 		else
@@ -336,7 +458,7 @@ end
 
 function MusicAPI.SetRoomTrack(id, track, stage)
 	if stage then
-		MusicAPI.assert(MusicAPI.Stages[stage], "MusicAPI.SetRoomTrack(): Stage \"".. tostring(stage).."\" is unregisted!")
+		assert(MusicAPI.Stages[stage], "MusicAPI.SetRoomTrack(): Stage \"".. tostring(stage).."\" is unregisted!")
 		if not MusicAPI.Stages[stage].Tracks.Rooms then
 			MusicAPI.Stages[stage].Tracks.Rooms = { id = track }
 		else
@@ -349,7 +471,7 @@ end
 
 function MusicAPI.ResetRoom(id, stage)
 	if stage then
-		MusicAPI.assert(MusicAPI.Stages[stage], "MusicAPI.ResetRoom(): Stage \"".. tostring(stage).."\" is unregisted!")
+		assert(MusicAPI.Stages[stage], "MusicAPI.ResetRoom(): Stage \"".. tostring(stage).."\" is unregisted!")
 		if MusicAPI.Stages[stage].Tracks.Rooms and MusicAPI.Stages[stage].Tracks.Rooms[id] then
 			if MusicAPI.Default.Stages[stage].Tracks.Rooms then
 				MusicAPI.Stages[stage].Tracks.Rooms[id] = MusicAPI.Default.Stages[stage].Tracks.Rooms[id]
